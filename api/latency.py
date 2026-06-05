@@ -84,7 +84,7 @@ def calculate_metrics(req: RequestBody):
                 if latency > req.threshold_ms
             )
         })
-
+ 
     return result
 
 
