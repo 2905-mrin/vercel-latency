@@ -87,17 +87,24 @@ def calculate_metrics(req: RequestBody):
     return result
 
 
-# Route used when file is mounted as /api/latency
+from fastapi.responses import JSONResponse
+
 @app.post("/")
 def metrics(req: RequestBody):
-    return calculate_metrics(req)
+    result = calculate_metrics(req)
+
+    response = JSONResponse(content=result)
+    response.headers["Access-Control-Allow-Origin"] = "*"
+    return response
 
 
-# Extra route in case Vercel mounts differently
 @app.post("/api/latency")
 def metrics_alt(req: RequestBody):
-    return calculate_metrics(req)
-from fastapi import Response
+    result = calculate_metrics(req)
+
+    response = JSONResponse(content=result)
+    response.headers["Access-Control-Allow-Origin"] = "*"
+    return response
 
 @app.options("/")
 def options_root():
