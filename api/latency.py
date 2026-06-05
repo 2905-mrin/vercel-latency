@@ -66,7 +66,7 @@ def health():
 
 
 def calculate_metrics(req: RequestBody):
-    result = {}
+    result = []
 
     for region in req.regions:
         rows = [r for r in DATA if r["region"] == region]
@@ -74,7 +74,8 @@ def calculate_metrics(req: RequestBody):
         latencies = [r["latency_ms"] for r in rows]
         uptimes = [r["uptime_pct"] for r in rows]
 
-        result[region] = {
+        result.append({
+            "region": region,
             "avg_latency": round(float(np.mean(latencies)), 2),
             "p95_latency": round(float(np.percentile(latencies, 95)), 2),
             "avg_uptime": round(float(np.mean(uptimes)), 3),
@@ -82,7 +83,7 @@ def calculate_metrics(req: RequestBody):
                 1 for latency in latencies
                 if latency > req.threshold_ms
             )
-        }
+        })
 
     return result
 
