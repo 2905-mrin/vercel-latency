@@ -85,7 +85,7 @@ def calculate_metrics(req: RequestBody):
             )
         })
  
-    return result
+    return {"regions": result}
 
 
 from fastapi.responses import JSONResponse
