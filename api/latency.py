@@ -5,8 +5,7 @@ import numpy as np
 
 app = FastAPI()
 
-from fastapi.middleware.cors import CORSMiddleware
-
+# CORS
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -14,15 +13,6 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-from fastapi import Response
-
-@app.options("/{path:path}")
-def options_handler(path: str):
-    response = Response()
-    response.headers["Access-Control-Allow-Origin"] = "*"
-    response.headers["Access-Control-Allow-Methods"] = "*"
-    response.headers["Access-Control-Allow-Headers"] = "*"
-    return response
 
 DATA = [
     {"region":"apac","latency_ms":152.39,"uptime_pct":99.353},
@@ -75,8 +65,7 @@ def health():
     return {"status": "ok"}
 
 
-@app.post("/")
-def metrics(req: RequestBody):
+def calculate_metrics(req: RequestBody):
     result = {}
 
     for region in req.regions:
@@ -96,3 +85,15 @@ def metrics(req: RequestBody):
         }
 
     return result
+
+
+# Route used when file is mounted as /api/latency
+@app.post("/")
+def metrics(req: RequestBody):
+    return calculate_metrics(req)
+
+
+# Extra route in case Vercel mounts differently
+@app.post("/api/latency")
+def metrics_alt(req: RequestBody):
+    return calculate_metrics(req)
