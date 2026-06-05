@@ -5,12 +5,24 @@ import numpy as np
 
 app = FastAPI()
 
+from fastapi.middleware.cors import CORSMiddleware
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
-    allow_methods=["POST"],
+    allow_credentials=False,
+    allow_methods=["*"],
     allow_headers=["*"],
 )
+from fastapi import Response
+
+@app.options("/{path:path}")
+def options_handler(path: str):
+    response = Response()
+    response.headers["Access-Control-Allow-Origin"] = "*"
+    response.headers["Access-Control-Allow-Methods"] = "*"
+    response.headers["Access-Control-Allow-Headers"] = "*"
+    return response
 
 DATA = [
     {"region":"apac","latency_ms":152.39,"uptime_pct":99.353},
