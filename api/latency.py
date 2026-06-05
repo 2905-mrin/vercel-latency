@@ -97,3 +97,21 @@ def metrics(req: RequestBody):
 @app.post("/api/latency")
 def metrics_alt(req: RequestBody):
     return calculate_metrics(req)
+from fastapi import Response
+
+@app.options("/")
+def options_root():
+    response = Response()
+    response.headers["Access-Control-Allow-Origin"] = "*"
+    response.headers["Access-Control-Allow-Methods"] = "POST, OPTIONS"
+    response.headers["Access-Control-Allow-Headers"] = "*"
+    return response
+
+
+@app.options("/api/latency")
+def options_latency():
+    response = Response()
+    response.headers["Access-Control-Allow-Origin"] = "*"
+    response.headers["Access-Control-Allow-Methods"] = "POST, OPTIONS"
+    response.headers["Access-Control-Allow-Headers"] = "*"
+    return response
